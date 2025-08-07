@@ -50,19 +50,18 @@ public class SmoothHealthBar : MonoBehaviour
 
     private IEnumerator SmoothChangeBar(float oldValue, float newValue)
     {
-        yield return _delay;
-
         float targetFill = _targetHealth / _health.MaxHealth.Value;
         float currentFill = _bar.fillAmount;
+
+        AdjustBar(currentFill, targetFill);
+
+        yield return _delay;
 
         while (Mathf.Approximately(_bar.fillAmount, targetFill) == false)
         {
             targetFill = _targetHealth / _health.MaxHealth.Value;
 
-            if (currentFill < targetFill)
-            {
-                _bar.fillAmount = targetFill;
-            }
+            AdjustBar(currentFill, targetFill);
 
             _bar.fillAmount = Mathf.MoveTowards(_bar.fillAmount, targetFill, _barChangingSpeed * Time.unscaledDeltaTime);
             currentFill = _bar.fillAmount;
@@ -71,6 +70,14 @@ public class SmoothHealthBar : MonoBehaviour
         }
 
         _smoothChangeBarCoroutine = null;
+    }
+
+    private void AdjustBar(float currentFill, float targetFill)
+    {
+        if (currentFill < targetFill)
+        {
+            _bar.fillAmount = targetFill;
+        }
     }
 
     private void SetBarToDefault() =>
