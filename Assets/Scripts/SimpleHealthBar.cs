@@ -1,32 +1,24 @@
-using TMPro;
+using R3;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SimpleHealthBar : MonoBehaviour
 {
     [SerializeField] private Health _health;
+    [SerializeField] private Image _bar;
 
-    [SerializeField] private TMP_Text _textMeshPro;
+    private CompositeDisposable _disposable = new CompositeDisposable();
 
-    private void Awake()
+    private void Start()
     {
-        DrawHealth(0f, 0f);
-    }
-
-    private void OnEnable()
-    {
-        _health.MaxHealth.ValueChanged += DrawHealth;
-        _health.CurrentHealth.ValueChanged += DrawHealth;
+        _health.PublicCurrentHealth.CombineLatest(_health.PublicMaxHealth, (current, max) => (current, max)).Subscribe(_ => ChangeBar()).AddTo(_disposable);
     }
 
     private void OnDisable()
     {
-        _health.MaxHealth.ValueChanged -= DrawHealth;
-        _health.CurrentHealth.ValueChanged -= DrawHealth;
+        _disposable.Dispose();
     }
 
-
-    private void DrawHealth(float oldValue, float newValue)
-    {
-        _textMeshPro.text = $"HP [{_health.CurrentHealth.Value}/{_health.MaxHealth.Value}]";
-    }
+    private void ChangeBar() =>
+        _bar.fillAmount = _health.PublicCurrentHealth.CurrentValue / _health.PublicMaxHealth.CurrentValue;
 }

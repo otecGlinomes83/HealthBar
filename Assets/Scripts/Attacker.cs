@@ -2,13 +2,9 @@ using UnityEngine;
 
 public class Attacker : MonoBehaviour
 {
+    [SerializeField] private Health _health;
     [SerializeField] private float _damage = 5f;
 
-    [SerializeField] private Health _target;
-
-
-    public void Attack()
-    {
-        _target.TakeDamage(_damage);
-    }
+    public void Attack() =>
+        _health.TakeDamage(_damage);
 }

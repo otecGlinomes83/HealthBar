@@ -1,3 +1,4 @@
+using R3;
 using System;
 using UnityEngine;
 
@@ -7,15 +8,19 @@ public class Health : MonoBehaviour
 
     public event Action Dead;
 
-    public bool IsAlive => CurrentHealth.Value > 0;
+    public ReadOnlyReactiveProperty<bool> IsAlive;
+    public ReadOnlyReactiveProperty<float> PublicCurrentHealth => CurrentHealth;
+    public ReadOnlyReactiveProperty<float> PublicMaxHealth => MaxHealth;
 
-    public ReactiveFloat CurrentHealth { get; private set; } = new ReactiveFloat(default);
-    public ReactiveFloat MaxHealth { get; private set; } = new ReactiveFloat(default);
+    private ReactiveProperty<float> CurrentHealth;
+    private ReactiveProperty<float> MaxHealth;
 
     private void Awake()
     {
-        MaxHealth.Value = _maxHealth;
-        CurrentHealth.Value = _maxHealth;
+        MaxHealth = new ReactiveProperty<float>(_maxHealth);
+        CurrentHealth = new ReactiveProperty<float>(_maxHealth);
+
+        IsAlive = CurrentHealth.Select(health => health > 0).ToReadOnlyReactiveProperty();
     }
 
     public void TakeDamage(float damage)
@@ -32,7 +37,7 @@ public class Health : MonoBehaviour
             CurrentHealth.Value -= damage;
         }
 
-        if (IsAlive == false)
+        if (IsAlive.CurrentValue == false)
         {
             Dead?.Invoke();
             CurrentHealth.Value = _maxHealth;
