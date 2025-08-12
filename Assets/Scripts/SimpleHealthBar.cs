@@ -5,16 +5,6 @@ public class SimpleHealthBar : HealthBarBase
 {
     [SerializeField] private Image _bar;
 
-    protected override void Awake()
-    {
-        base.Awake();
-    }
-
-    protected override void OnDisable()
-    {
-        base.OnDisable();
-    }
-
     protected override void UpdateView() =>
         _bar.fillAmount = _health.PublicCurrentHealth.CurrentValue / _health.PublicMaxHealth.CurrentValue;
 }

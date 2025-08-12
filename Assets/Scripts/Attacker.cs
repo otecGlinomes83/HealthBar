@@ -1,5 +1,5 @@
-public class Attacker : HealthModifier
+public class Attacker : HealthInteractor
 {
-    public override void ApplyModifier() =>
+    protected override void InteractHealth() =>
         _health.TakeDamage(_value);
 }

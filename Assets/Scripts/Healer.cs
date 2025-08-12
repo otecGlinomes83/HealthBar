@@ -1,5 +1,5 @@
-public class Healer : HealthModifier
+public class Healer : HealthInteractor
 {
-    public override void ApplyModifier() =>
+    protected override void InteractHealth() =>
         _health.Heal(_value);
 }
