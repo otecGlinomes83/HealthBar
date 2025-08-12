@@ -1,10 +1,5 @@
-using UnityEngine;
-
-public class Attacker : MonoBehaviour
+public class Attacker : HealthModifier
 {
-    [SerializeField] private Health _health;
-    [SerializeField] private float _damage = 5f;
-
-    public void Attack() =>
-        _health.TakeDamage(_damage);
+    public override void ApplyModifier() =>
+        _health.TakeDamage(_value);
 }

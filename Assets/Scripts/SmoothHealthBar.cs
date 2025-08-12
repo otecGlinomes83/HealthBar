@@ -1,39 +1,33 @@
-using R3;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SmoothHealthBar : MonoBehaviour
+public class SmoothHealthBar : HealthBarBase
 {
-    [SerializeField] private Health _health;
     [SerializeField] private Image _bar;
 
     [SerializeField] private float _barChangingSpeed = 0.25f;
     [SerializeField] private float _barChangingDelay = 0.25f;
 
-
     private Coroutine _smoothChangeBarCoroutine;
     private WaitForSecondsRealtime _delay;
-    private CompositeDisposable _disposable = new CompositeDisposable();
 
     private float _defaultBarAmount = 1f;
 
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
         _delay = new WaitForSecondsRealtime(_barChangingDelay);
-
-        _health.PublicCurrentHealth.CombineLatest(_health.PublicMaxHealth, (current, max) => (current, max)).Subscribe(_ => TryStartSmoothChangingBar()).AddTo(_disposable);
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         _health.Dead -= SetBarToDefault;
-        _disposable.Dispose();
     }
 
-    private void TryStartSmoothChangingBar()
+    protected override void UpdateView()
     {
-
         if (_smoothChangeBarCoroutine != null)
         {
             StopCoroutine(_smoothChangeBarCoroutine);

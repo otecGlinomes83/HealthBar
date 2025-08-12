@@ -1,24 +1,20 @@
-using R3;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SimpleHealthBar : MonoBehaviour
+public class SimpleHealthBar : HealthBarBase
 {
-    [SerializeField] private Health _health;
     [SerializeField] private Image _bar;
 
-    private CompositeDisposable _disposable = new CompositeDisposable();
-
-    private void Start()
+    protected override void Awake()
     {
-        _health.PublicCurrentHealth.CombineLatest(_health.PublicMaxHealth, (current, max) => (current, max)).Subscribe(_ => ChangeBar()).AddTo(_disposable);
+        base.Awake();
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
-        _disposable.Dispose();
+        base.OnDisable();
     }
 
-    private void ChangeBar() =>
+    protected override void UpdateView() =>
         _bar.fillAmount = _health.PublicCurrentHealth.CurrentValue / _health.PublicMaxHealth.CurrentValue;
 }

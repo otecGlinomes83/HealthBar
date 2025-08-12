@@ -1,25 +1,17 @@
-using R3;
 using TMPro;
 using UnityEngine;
 
-public class TextHealthBar : MonoBehaviour
+public class TextHealthBar : HealthBarBase
 {
-    [SerializeField] private Health _health;
     [SerializeField] private TMP_Text _textMeshPro;
 
-    private CompositeDisposable _disposable = new CompositeDisposable();
+    protected override void Awake() =>
+        base.Awake();
 
-    private void Start()
-    {
-        DrawHealth();
-
-        _health.PublicCurrentHealth.CombineLatest(_health.PublicMaxHealth, (current, max) => (current, max)).Subscribe(_ => DrawHealth()).AddTo(_disposable);
-    }
-
-    private void OnDisable() =>
-        _disposable?.Dispose();
+    protected override void OnDisable() =>
+        base.OnDisable();
 
 
-    private void DrawHealth() =>
-        _textMeshPro.text = $"HP [{_health.PublicCurrentHealth.CurrentValue}/{_health.PublicMaxHealth.CurrentValue}]";
+    protected override void UpdateView() =>
+         _textMeshPro.text = $"HP [{_health.PublicCurrentHealth.CurrentValue}/{_health.PublicMaxHealth.CurrentValue}]";
 }

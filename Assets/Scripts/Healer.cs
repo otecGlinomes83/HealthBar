@@ -1,10 +1,5 @@
-using UnityEngine;
-
-public class Healer : MonoBehaviour
+public class Healer : HealthModifier
 {
-    [SerializeField] private Health _health;
-    [SerializeField] private float _heal = 5;
-
-    public void Heal() =>
-        _health.Heal(_heal);
+    public override void ApplyModifier() =>
+        _health.Heal(_value);
 }
